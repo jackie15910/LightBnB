@@ -8,6 +8,16 @@ const users = require("./json/users.json");
  * @param {String} email The email of the user.
  * @return {Promise<{}>} A promise to the user.
  */
+
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: 'labber',
+  password: '123',
+  host: 'localhost',
+  database: 'lightbnb'
+});
+
 const getUserWithEmail = function (email) {
 
 };
