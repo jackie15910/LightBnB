@@ -22,7 +22,7 @@ const getUserWithEmail = function (email) {
   return pool
     .query(`SELECT * FROM users WHERE email = $1`, [email])
     .then((result) => {
-      console.log(result.rows);
+      // console.log(result.rows);
       return result.rows[0];
     })
     .catch((err) => {
@@ -39,7 +39,7 @@ const getUserWithId = function (id) {
   return pool
     .query(`SELECT * FROM users WHERE id = $1`, [id])
     .then((result) => {
-      console.log(result.rows);
+      // console.log(result.rows);
       return result.rows[0];
     })
     .catch((err) => {
@@ -57,7 +57,7 @@ const addUser = function (user) {
     .query(`INSERT INTO users (name, password, email)
      VALUES ($1,$2,$3)`, [user.name, user.password, user.email])
     .then((result) => {
-      console.log(result.rows);
+      // console.log(result.rows);
       return result.rows[0];
     })
     .catch((err) => {
@@ -83,7 +83,7 @@ const getAllReservations = function (guest_id, limit = 10) {
   ORDER BY reservations.start_date
   LIMIT $2`, [guest_id, limit])
   .then((result) => {
-    console.log(result.rows, "Get all reservations");
+    // console.log(result.rows, "Get all reservations");
     return result.rows;
   })
   .catch((err) => {
@@ -127,18 +127,20 @@ const getAllProperties = (options, limit = 10) => {
       queryString += `AND cost_per_night <= $${queryParams.length} `;
     }
   }
+  queryString += `
+  GROUP BY properties.id
+  `;
+  if (options.minimum_rating) {
+    queryParams.push(options.minimum_rating);
+    queryString += `HAVING AVG(property_reviews.rating) >= $${queryParams.length} `;
+  }
   queryParams.push(limit);
   queryString += `
-    GROUP BY properties.id
+  ORDER BY cost_per_night
+  LIMIT $${queryParams.length};
   `;
-    if (options.minimum_rating) {
-      queryParams.push(options.minimum_rating);
-      queryString += `HAVING AVG(property_reviews.rating) >= $${queryParams.length} `;
-    }
-    queryString += `
-    ORDER BY cost_per_night
-    LIMIT $${queryParams.length};
-  `;
+  console.log(queryParams, "This is QueryParams")
+  console.log(queryString, "This is QueryString");
   return pool.query(queryString, queryParams)
     .then((result) => {
       console.log(result.rows, "Get all properties");
