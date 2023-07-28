@@ -161,7 +161,7 @@ const addProperty = function (property) {
      parking_spaces, number_of_bathrooms, number_of_bedrooms, country, street, city, province, post_code, active)
      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)`, [property.owner_id, property.title ,property.description ,property.thumbnail_photo_url ,property.cover_photo_url 
     ,property.cost_per_night ,property.parking_spaces ,property.number_of_bathrooms ,property.number_of_bedrooms ,property.country ,property.street ,property.city
-    ,property.province ,property.post_code ,property.active])
+    ,property.province ,property.post_code , true])
     .then((result) => {
       console.log(result.rows);
       return result.rows[0];
